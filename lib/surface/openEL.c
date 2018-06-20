@@ -2,28 +2,16 @@
  * @~japanese
  * @file openEL.c
  * @brief		OpenEL 共有部
- * @Version 3.0.0
+ * @Version 3.1.0
  *
  * @~english
  * @file openEL.c
  * @brief		OpenEL Common File
- * @Version 3.0.0
+ * @Version 3.1.0
  */
-/*
 
-Copyright (c) 2017,2018 Japan Embedded Systems Technology Association(JASA)
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-    Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-    Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-    Neither the name of the Association nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-#ifndef OPENEL_H_
-#define OPENEL_H_
+#ifndef OPENEL_H
+#define OPENEL_H
 
 /* Includes */
 /*---------------------------------------------------------------------------*/
@@ -302,7 +290,7 @@ HALRETURNCODE_T HalSensorGetValueList(HALCOMPONENT_T *halComponent,int32_t *pOut
 	}
 	return retCode;
 }
-HALRETURNCODE_T HalSensorGetTimedValueList(HALCOMPONENT_T *halComponent,int32_t *pOutSize, HALFLOAT_T *valueList, int32_t *time) {
+HALRETURNCODE_T HalSensorGetTimedValueList(HALCOMPONENT_T *halComponent,int32_t *pOutSize, HALFLOAT_T *valueList, int32_t *timeValue) {
 	HAL_HANDLER_T *pHandler;
 	HAL_ARGUMENT_T cmd;
 	HALRETURNCODE_T retCode;
@@ -315,8 +303,8 @@ HALRETURNCODE_T HalSensorGetTimedValueList(HALCOMPONENT_T *halComponent,int32_t 
 	for ( i=0; i<cmd.num; i++ ) {
 		valueList[i] = ((HALSENSOR_T *)halComponent)->valueList[i];
 	}
-	*time = ((HALSENSOR_T *)halComponent)->time;
+	*timeValue = ((HALSENSOR_T *)halComponent)->time;
 	return retCode;
 }
 /*---------------------------------------------------------------------------*/
-#endif /* OPENEL_H_ */
+#endif /* OPENEL_H */

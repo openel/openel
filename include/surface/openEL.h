@@ -2,31 +2,19 @@
  * @~japanese
  * @file openEL.h
  * @brief		OpenEL 共通ヘッダーファイル
- * @Version 3.0.0
+ * @Version 3.1.0
  *
  * @~english
  * @file openEL.h
  * @brief		OpenEL Common Header File
- * @Version 3.0.0
+ * @Version 3.1.0
  */
-/*
 
-Copyright (c) 2017,2018 Japan Embedded Systems Technology Association(JASA)
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-    Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-    Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-    Neither the name of the Association nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
 #ifndef OPENEL_H
 #define OPENEL_H
 
 #ifdef __cplusplus
-namespace el {
+namespace hal {
 extern "C" {
 #endif /* __cplusplus */
 
@@ -35,6 +23,11 @@ extern "C" {
 #include <stdint.h>
 #include <HAL4RT.h>
 #include "openEL_linkedList.h"
+
+#define OPENEL_MAJOR      3
+#define OPENEL_MINOR      1
+#define OPENEL_PATCHLEVEL 0
+#define OPENEL_VERSION "OpenEL 3.1.0"
 
 /* request code */
 #define HAL_REQUEST_NO_EXCITE			(0)
@@ -55,12 +48,10 @@ typedef union halArgument_ut {
 #else
 	struct { HALFLOAT_T value; int32_t num; } FI; /**< get/setValue Command Interface */
 #endif
-
 } HAL_ARGUMENT_T;
 
 typedef union halArgumentDevice_ut HAL_ARGUMENT_DEVICE_T;
 
-/* OpenEL追加  HALACTUATOR  */
 /*---------------------------------------------------------------------------*/
 /**
  * @~japanese
@@ -84,7 +75,7 @@ void HalDestroy(HALCOMPONENT_T *halComponent);
 /*---------------------------------------------------------------------------*/
 #ifdef __cplusplus
 } /* extern "C" */
-} /* namespace el */
+} /* namespace hal */
 #endif /* __cplusplus */
 
 #endif /* OPENEL_H */
