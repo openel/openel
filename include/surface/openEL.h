@@ -21,7 +21,7 @@ extern "C" {
 //#define HAL_SW_FLOAT_SIZE 1
 
 #include <stdint.h>
-#include <HAL4RT.h>
+#include "HAL4RT.h"
 #include "openEL_linkedList.h"
 
 #define OPENEL_MAJOR      3

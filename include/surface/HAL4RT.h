@@ -68,10 +68,10 @@ HALRETURNCODE_T HalRemoveObserver(HALCOMPONENT_T *halComponent, HALOBSERVER_T *h
 HALRETURNCODE_T HalGetProperty(HALCOMPONENT_T *halComponent, HALPROPERTY_T *property);
 HALRETURNCODE_T HalGetTime(HALCOMPONENT_T *halComponent, int32_t *timeValue);
 
-typedef struct HalEventTimer_st HALEVENTTIMER_T;
+struct HalEventTimer_st;
 typedef struct HalTimerObserver_st {
 	HAL_LINKED_LIST_HEAD
-	void (*notify_timer)(HALEVENTTIMER_T *eventTimer);
+	void (*notify_timer)(struct HalEventTimer_st *eventTimer);
 } HALTIMEROBSERVER_T;
 
 typedef struct HalEventTimer_st {
@@ -87,9 +87,9 @@ HALRETURNCODE_T HalEventTimerRemoveObserver(HALEVENTTIMER_T *eventTimer, HALTIME
 
 /** HalActuator */
 typedef struct HalActuator_st {
-  /* HALCOMPONENT */
+	/* HALCOMPONENT */
 	HALCOMPONENT_BASE_MEMBER
-  /* ACTUATOR */
+	/* ACTUATOR */
 	HALFLOAT_T *valueList;
 } HALACTUATOR_T;
 
@@ -97,15 +97,14 @@ typedef struct HalActuator_st {
 #define HAL_REQUEST_POSITIONE_CONTROL	(1)
 #define HAL_REQUEST_VELOVITY_CONTROL	(2)
 #define HAL_REQUEST_TORQUE_CONTROL		(3)
-
 HALRETURNCODE_T HalActuatorSetValue(HALCOMPONENT_T *halComponent, int32_t request, HALFLOAT_T value);
 HALRETURNCODE_T HalActuatorGetValue(HALCOMPONENT_T *halComponent, int32_t request, HALFLOAT_T *value);
 
 /** HalSensor */
 typedef struct HalSensor_st {
-  /* HALCOMPONENT */
+	/* HALCOMPONENT */
 	HALCOMPONENT_BASE_MEMBER
-  /* SENSOR */
+	/* SENSOR */
 	HALFLOAT_T *valueList;
 } HALSENSOR_T;
 

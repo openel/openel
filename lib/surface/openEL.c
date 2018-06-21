@@ -10,9 +10,6 @@
  * @Version 3.1.0
  */
 
-#ifndef OPENEL_H
-#define OPENEL_H
-
 /* Includes */
 /*---------------------------------------------------------------------------*/
 
@@ -307,4 +304,3 @@ HALRETURNCODE_T HalSensorGetTimedValueList(HALCOMPONENT_T *halComponent,int32_t 
 	return retCode;
 }
 /*---------------------------------------------------------------------------*/
-#endif /* OPENEL_H */
