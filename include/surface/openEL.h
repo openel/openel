@@ -30,14 +30,14 @@ extern "C" {
 #define OPENEL_VERSION "OpenEL 3.1.0"
 
 /* request code */
-#define HAL_REQUEST_NO_EXCITE			(0)
+#define HAL_REQUEST_NO_EXCITE		(0)
 #define HAL_REQUEST_POSITION_COMMAND	(HAL_REQUEST_POSITION_CONTROL)
 #define HAL_REQUEST_VELOCITY_COMMAND	(HAL_REQUEST_VELOCITY_CONTROL)
-#define HAL_REQUEST_TORQUE_COMMAND		(HAL_REQUEST_TORQUE_CONTROL)
-//										(4) /* Reserved */
+#define HAL_REQUEST_TORQUE_COMMAND	(HAL_REQUEST_TORQUE_CONTROL)
+//					(4) /* Reserved */
 #define HAL_REQUEST_POSITION_ACTUAL	(5)
 #define HAL_REQUEST_VELOCITY_ACTUAL	(6)
-#define HAL_REQUEST_TORQUE_ACTUAL		(7)
+#define HAL_REQUEST_TORQUE_ACTUAL	(7)
 
 /** Command Interface between surface layer and device layer*/
 typedef union halArgument_ut {
@@ -68,7 +68,7 @@ typedef union halArgumentDevice_ut HAL_ARGUMENT_DEVICE_T;
  * @param[in]	instanceID
  * @return HALCOMPONENT *address of created HAL Component
  */
-HALCOMPONENT_T * HalCreate(int32_t vendorID,int32_t productID,int32_t instanceID);
+HALCOMPONENT_T * HalCreate(int32_t deviceKindID,int32_t vendorID,int32_t productID,int32_t instanceID);
 /** HALComponent destroy */
 void HalDestroy(HALCOMPONENT_T *halComponent);
 

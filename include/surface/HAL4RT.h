@@ -96,7 +96,7 @@ typedef struct HalActuator_st {
 /* request code */
 #define HAL_REQUEST_POSITION_CONTROL	(1)
 #define HAL_REQUEST_VELOCITY_CONTROL	(2)
-#define HAL_REQUEST_TORQUE_CONTROL		(3)
+#define HAL_REQUEST_TORQUE_CONTROL	(3)
 HALRETURNCODE_T HalActuatorSetValue(HALCOMPONENT_T *halComponent, int32_t request, HALFLOAT_T value);
 HALRETURNCODE_T HalActuatorGetValue(HALCOMPONENT_T *halComponent, int32_t request, HALFLOAT_T *value);
 
