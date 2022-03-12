@@ -19,3 +19,4 @@ HALRETURNCODE_T HalEventTimerStopTimer_platform(HALEVENTTIMER_T *eventTimer);
 
 
 #endif /* OPENEL_PLATFORM_H_ */
+

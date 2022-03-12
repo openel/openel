@@ -1,5 +1,5 @@
 /*
- * openEL_platforrmLINUX.c
+ * openEL_platformLINUX.c
  *
  *  Created on: 2018/05/13
  *      Author: OpenEL-WG
@@ -25,7 +25,11 @@ void *HalMalloc(uint32_t size) {
 	uint8_t *pWk;
 	int32_t i;
 
-	pAdr = malloc(size);
+	pAdr = calloc(size, sizeof(uint32_t));
+	if(pAdr == NULL){
+		printf("HalMalloc err : No memory\n");
+		return NULL;
+	}
 	pWk = (uint8_t *)pAdr;
 	for ( i=0; i<size; i++ ) {
 		*pWk++ = 0;
@@ -69,7 +73,7 @@ makeTimer( char *name, timer_t *timerID, int expireMS, int intervalMS )
     sigemptyset(&sa.sa_mask);
     if (sigaction(sigNo, &sa, NULL) == -1)
     {
-				printf("%s:Failed to setup signal handling for %s.\n", __FUNCTION__, name);
+		printf("%s:Failed to setup signal handling for %s.\n", __FUNCTION__, name);
         return (1);
     }
 
@@ -96,6 +100,10 @@ HALRETURNCODE_T HalEventTimerStartTimer_platform(HALEVENTTIMER_T *argHalEventTim
 	HAL_EVENTTIMER_PF_T *wkHalEventTimerPF;
 //	printf("%s:start\n",__FUNCTION__);
 	wkHalEventTimerPF = malloc(sizeof(HAL_EVENTTIMER_PF_T));
+	if(wkHalEventTimerPF == NULL){
+		printf("HalEventTimerStartTimer_platform err : No memory\n");
+		return HAL_ERROR;
+	}
 	wkHalEventTimerPF->halEventTimer = argHalEventTimer;
 
 	retVal = (HALRETURNCODE_T)makeTimer("First Timer", &(wkHalEventTimerPF->_timerID), 40, (argHalEventTimer->eventPeriod));
@@ -118,7 +126,7 @@ HALRETURNCODE_T HalEventTimerStopTimer_platform(HALEVENTTIMER_T *argHalEventTime
 		if ( wkHalEventTimerPF->halEventTimer == argHalEventTimer ) {
 // ベースタイマ破棄
 			if(wkHalEventTimerPF->_timerID){
-    		timer_delete(wkHalEventTimerPF->_timerID);
+	    		timer_delete(wkHalEventTimerPF->_timerID);
 			}
 			halEventTimerPF = HalLinkedList_remove(halEventTimerPF,wkHalEventTimerPF);
 			free(wkHalEventTimerPF);

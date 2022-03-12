@@ -8,6 +8,11 @@
 #ifndef OPENEL_LINKEDLIST_H_
 #define OPENEL_LINKEDLIST_H_
 
+#ifdef __cplusplus
+namespace hal {
+extern "C" {
+#endif /* __cplusplus */
+
 #include <stdint.h>
 
 #define HalLinkedList_add( pBgn,pAdd) HalLinkedList_add__( &((pBgn)->linkedList),&((pAdd)->linkedList)  )
@@ -17,5 +22,10 @@ void * HalLinkedList_add__(HAL_LINKED_LIST_T *pNodeBgn,HAL_LINKED_LIST_T *pNodeA
 void * HalLinkedList_remove__(HAL_LINKED_LIST_T *pNodeBgn,HAL_LINKED_LIST_T *pNodeRemove);
 
 #define HalLinkedList_getNext( pArg ) (void *)((pArg)->linkedList.pNext)
+
+#ifdef __cplusplus
+} /* extern "C" */
+} /* namespace hal */
+#endif /* __cplusplus */
 
 #endif /* OPENEL_LINKEDLIST_H_*/
