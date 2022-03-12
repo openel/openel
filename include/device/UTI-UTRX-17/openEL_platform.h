@@ -8,6 +8,8 @@
 #ifndef OPENEL_PLATFORM_H_
 #define OPENEL_PLATFORM_H_
 
+#include <stdint.h>
+
 void *HalMalloc(uint32_t size);
 void HalFree(void *pMem);
 

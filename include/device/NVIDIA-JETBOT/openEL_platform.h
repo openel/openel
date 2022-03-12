@@ -1,7 +1,7 @@
 /*
  * openEL_platform.h
  *
- *  Created on: 2018/05/13
+ *  Created on: 2021/12/24
  *      Author: OpenEL-WG
  */
 
@@ -19,4 +19,3 @@ HALRETURNCODE_T HalEventTimerStopTimer_platform(HALEVENTTIMER_T *eventTimer);
 
 
 #endif /* OPENEL_PLATFORM_H_ */
-
