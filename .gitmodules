@@ -1,3 +1,6 @@
 [submodule "lib/device/SEN-SCD30/embedded-scd"]
 	path = lib/device/SEN-SCD30/embedded-scd
 	url = https://github.com/Sensirion/embedded-scd.git
+[submodule "lib/device/LEGO-EV3/ev3dev-c"]
+	path = lib/device/LEGO-EV3/ev3dev-c
+	url = https://github.com/in4lio/ev3dev-c.git
