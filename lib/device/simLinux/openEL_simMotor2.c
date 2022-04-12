@@ -139,7 +139,7 @@ static HALRETURNCODE_T fncSetVal(HALCOMPONENT_T *pHalComponent,HAL_ARGUMENT_T *p
 	switch ( pCmd->FI.num ) {
 	default:
 		break;
-	case HAL_REQUEST_POSITIONE_CONTROL:
+	case HAL_REQUEST_POSITION_CONTROL:
 		simMotAr[idx].posCmd = pCmd->FI.value;
 		retCode = HAL_OK;
 		break;
@@ -155,11 +155,11 @@ static HALRETURNCODE_T fncGetVal(HALCOMPONENT_T *pHalComponent,HAL_ARGUMENT_T *p
 	switch ( pCmd->FI.num ) {
 	default:
 		break;
-	case HAL_REQUEST_POSITIONE_COMMAND:
+	case HAL_REQUEST_POSITION_COMMAND:
 		pCmd->FI.value = simMotAr[idx].posCmd;
 		retCode = HAL_OK;
 		break;
-	case HAL_REQUEST_POSITIONE_ACUTUAL:
+	case HAL_REQUEST_POSITION_ACTUAL:
 		pCmd->FI.value = simMotAr[idx].posSen;
 		retCode = HAL_OK;
 		break;
