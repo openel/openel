@@ -60,9 +60,9 @@ int main(void) {
 
 	printf("openEL Start\n");
 
-	halMotor01  = HalCreate(0x00000000,0x00000001,2);
-	halMotor02  = HalCreate(0x00000000,0x00000002,5);
-	halSensor01 = HalCreate(0x00000000,0x00000010,0);
+	halMotor01  = HalCreate(0x0001,0x00000000,0x00000001,1);
+	halMotor02  = HalCreate(0x0001,0x00000000,0x00000002,2);
+	halSensor01 = HalCreate(0x0002,0x00000000,0x00000010,1);
 
 	HalInit(halMotor01);
 	HalInit(halMotor02);
@@ -137,16 +137,16 @@ void cbNotifyTimer101(HALEVENTTIMER_T *eventTimer) {
 	}
 	posX = 10.0*(1.0-cos(ph));
 	posY = 10.0*(sin(ph));
-	HalActuatorSetValue(halMotor01,HAL_REQUEST_POSITIONE_CONTROL,posX);
-	HalActuatorSetValue(halMotor02,HAL_REQUEST_POSITIONE_CONTROL,posY);
+	HalActuatorSetValue(halMotor01,HAL_REQUEST_POSITION_CONTROL,posX);
+	HalActuatorSetValue(halMotor02,HAL_REQUEST_POSITION_CONTROL,posY);
 //	HalSetValue(halMotor01,HAL_REQUEST_POSITIONE_CONTROL,posX);
 //	HalSetValue(halMotor02,HAL_REQUEST_POSITIONE_CONTROL,posY);
 }
 
 void cbNotifyTimer102(HALEVENTTIMER_T *eventTimer) {
 	event_count2 += 10;
-	HalActuatorGetValue(halMotor01,HAL_REQUEST_POSITIONE_ACUTUAL,&simVal1);
-	HalActuatorGetValue(halMotor02,HAL_REQUEST_POSITIONE_ACUTUAL,&simVal2);
+	HalActuatorGetValue(halMotor01,HAL_REQUEST_POSITION_ACTUAL,&simVal1);
+	HalActuatorGetValue(halMotor02,HAL_REQUEST_POSITION_ACTUAL,&simVal2);
 //	HalGetValue(halMotor01,HAL_REQUEST_POSITIONE_ACUTUAL,&simVal1);
 //	HalGetValue(halMotor02,HAL_REQUEST_POSITIONE_ACUTUAL,&simVal2);
 }
