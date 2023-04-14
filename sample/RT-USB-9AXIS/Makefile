@@ -28,7 +28,7 @@ TARGET = sample
 TARGET_SOURCES = projRTUSB9AXIS.c
 
 #CFLAGS += -std=c99
-CFLAGS += -g
+CFLAGS +=
 
 .PHONY : all
 all : openel sample
