@@ -12,7 +12,7 @@
 
 const HAL_REG_T HalRegTbl[] = {
 /*		DevKind		Vendor		Product			function table		component size								*/
-		{0x0002,	0x00000005,	0x00000001,		&HalSensorRTUSB9AXISTbl,	sizeof(HALSENSOR_T)		},
+		{0x0004,	0x00000005,	0x00000001,		&HalSensorRTUSB9AXISTbl,	sizeof(HALSENSOR_T)		},
 };
 
 const int32_t hal_szRegTbl = sizeof(HalRegTbl)/sizeof(HAL_REG_T);

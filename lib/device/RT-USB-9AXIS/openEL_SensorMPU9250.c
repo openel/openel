@@ -27,8 +27,8 @@
 #include <getopt.h>
 
 /* 9軸センサモジュールに対応するデバイスファイル */
-//static char serial_port[128] = "/dev/ttyACM0" ;
-static char serial_port[128] = "/dev/cu.usbmodem9AXIS_01" ;
+static char serial_port[128] = "/dev/ttyACM0" ;
+//static char serial_port[128] = "/dev/cu.usbmodem9AXIS_01" ;
 
 #define BAUDRATE B115200 //ボーレートの設定
 
@@ -59,12 +59,12 @@ static int32_t timeOrg;
 static HALFLOAT_T sensorValueAr[16];
 static HALFLOAT_T simSensor1_x,simSensor1_y;
 
-int16_t acc_ref_x;
-int16_t acc_ref_y;
-int16_t acc_ref_z;
-int16_t omega_ref_x;
-int16_t omega_ref_y;
-int16_t omega_ref_z;
+static int16_t acc_ref_x;
+static int16_t acc_ref_y;
+static int16_t acc_ref_z;
+static int16_t omega_ref_x;
+static int16_t omega_ref_y;
+static int16_t omega_ref_z;
 
 static HALRETURNCODE_T fncInit3(HALCOMPONENT_T *pHalComponent,HAL_ARGUMENT_T *pCmd) {
 	time_t timeWk;
