@@ -63,10 +63,13 @@ int main(void) {
 
 	printf("openEL Start\n");
 
-//	halMotor01  = HalCreate(0x00000000,0x00000001,2);
-//	halMotor02  = HalCreate(0x00000000,0x00000002,5);
-	halSensor01 = HalCreate(0x00000005,0x00000001,0);
-
+//	halMotor01  = HalCreate(0x00000001,0x00000000,0x00000001,2);
+//	halMotor02  = HalCreate(0x00000001,0x00000000,0x00000002,5);
+	if(!(halSensor01 = HalCreate(0x00000004,0x00000005,0x00000001,1))){
+		printf("Error creating device\n");
+		return 0;
+	}
+	
 //	HalInit(halMotor01);
 //	HalInit(halMotor02);
 	HalInit(halSensor01);
