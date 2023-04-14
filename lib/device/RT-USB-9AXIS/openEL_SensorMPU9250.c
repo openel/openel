@@ -205,12 +205,11 @@ static HALRETURNCODE_T fncGetValLst(HALCOMPONENT_T *pHalComponent,HAL_ARGUMENT_T
 	int32_t concatenation;
 	uint8_t data_H;
 	uint8_t data_L;
-	
+
 	for(i=0;i<10;i++) {
 		data_L = (0xff&buff[k+8]);
 		data_H = (0xff&buff[k+9]);
 		concatenation = data_L + (data_H<<8);
-
 		if(concatenation >= 32767)
 			concatenation = concatenation - 65535;
 		if(i == 0)
