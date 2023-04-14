@@ -7,7 +7,7 @@ COMPONENT = RT-USB-9AXIS
 C_LIB_SOURCES = \
 	$(LIB_DIR)/surface/openEL_linkedList.c \
 	$(LIB_DIR)/surface/openEL.c \
-	$(LIB_DIR)/device/$(COMPONENT)/openEL_platformMAC.c \
+	$(LIB_DIR)/device/$(COMPONENT)/openEL_platformLINUX.c \
 	$(LIB_DIR)/device/$(COMPONENT)/openEL_registryConfig.c \
 	$(LIB_DIR)/device/$(COMPONENT)/openEL_SensorMPU9250.c
 
@@ -36,7 +36,7 @@ all : openel sample
 .PHONY : sample
 sample : $(TARGET)
 	@echo "Linking $@"
-	$(CC) $(CFLAGS) $(INC_PATH) -L. -o $@ $(TARGET_SOURCES) -lopenel
+	$(CC) $(CFLAGS) $(INC_PATH) -L. -o $@ $(TARGET_SOURCES) -lopenel -lrt -lm -lpthread 
 
 .PHONY : openel
 openel : $(LIB_TARGET)
