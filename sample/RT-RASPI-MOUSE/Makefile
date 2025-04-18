@@ -32,12 +32,32 @@ TARGET_SOURCES = projRT-RASPI-MOUSE.c
 CFLAGS +=
 
 .PHONY : all
-all : openel sample
+all : openel sample mf mb tr tl cd
 
 .PHONY : sample
-sample : $(TARGET)
+sample :
 	@echo "Linking $@"
-	$(CC) $(CFLAGS) $(INC_PATH) -L. -o $@ $(TARGET_SOURCES) -lopenel -lrt -lm -lpthread
+	$(CC) $(CFLAGS) $(INC_PATH) -L. -o $@ $(TARGET_SOURCES) -lopenel -lrt -lm
+
+.PHONY : mf
+mf :
+	$(CC) $(CFLAGS) $(INC_PATH) -L. -o $@ move_forward.c -lopenel -lrt -lm
+
+.PHONY : mb
+mb :
+	$(CC) $(CFLAGS) $(INC_PATH) -L. -o $@ move_backward.c -lopenel -lrt -lm
+
+.PHONY : tr
+tr :
+	$(CC) $(CFLAGS) $(INC_PATH) -L. -o $@ turn_right.c -lopenel -lrt -lm
+
+.PHONY : tl
+tl :
+	$(CC) $(CFLAGS) $(INC_PATH) -L. -o $@ turn_left.c -lopenel -lrt -lm
+
+.PHONY : cd
+cd :
+	$(CC) $(CFLAGS) $(INC_PATH) -L. -o $@ change_direction.c -lopenel -lrt -lm
 
 .PHONY : openel
 openel : $(LIB_TARGET)
@@ -58,3 +78,4 @@ clean:
 	rm $(LIB_TARGET)
 	rm $(TARGET)
 	rm $(O_FILES)
+	rm mf mb tr tl cd
