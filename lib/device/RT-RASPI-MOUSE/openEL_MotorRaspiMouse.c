@@ -53,14 +53,14 @@ typedef struct simMot_st {
 	HALCOMPONENT_T *hC;
 	HALOBSERVER_T *obs;
 	double posCmd,posSen,velCmd,velSen;
-	HALFLOAT_T valueList[16];
+	HALFLOAT_T valueList;
 	int32_t numObs;
 	int32_t errCode;
 	uint8_t inPos;
 } SIM_MOT_T;
 SIM_MOT_T simMotAr[16];
 
-#define MAX_AXIS	4
+#define MAX_AXIS	2
 
 static double posCmdAr[MAX_AXIS],posSenAr[MAX_AXIS];
 static double velCmdAr[MAX_AXIS],velSenAr[MAX_AXIS];
@@ -152,9 +152,15 @@ static HALRETURNCODE_T fncSetVal(HALCOMPONENT_T *pHalComponent,HAL_ARGUMENT_T *p
 	printf("%s:%s\n", __FILE__, __FUNCTION__);
 #endif
 	HALRETURNCODE_T retCode = HAL_ERROR;
-	int32_t idx = pHalComponent->halId.instanceId;
+	int32_t idx = pHalComponent->halId.instanceId-1;
 	HALFLOAT_T velocity = 0;
 	int32_t pulseLen = 0;
+
+	if (idx < 0 || idx > 1)
+	{
+		printf("%s:instanceId must be 1 or 2!\n", __FUNCTION__);
+		return HAL_ERROR;
+	}
 
 	switch ( pCmd->FI.num ) {
 	default:
@@ -166,12 +172,10 @@ static HALRETURNCODE_T fncSetVal(HALCOMPONENT_T *pHalComponent,HAL_ARGUMENT_T *p
 #endif
 		posCmdAr[idx] = pCmd->FI.value;
 		int value = (int)posCmdAr[idx];
-		if (idx == 1) { // Left Motor
+		if (idx == 0) { // Left Motor
 			write(motor_l, (const void *)value, 5);
-		} else if (idx == 2) { // Right Motor
+		} else if (idx == 1) { // Right Motor
 			write(motor_r, (const void *)value, 5);
-		} else {
-			printf("%s:instanceId must be 1 or 2!\n", __FUNCTION__);
 		}
 		retCode = HAL_OK;
 		break;
@@ -180,13 +184,10 @@ static HALRETURNCODE_T fncSetVal(HALCOMPONENT_T *pHalComponent,HAL_ARGUMENT_T *p
 		printf("%s:%s:pCmd->FI.value=%f\n", __FILE__, __FUNCTION__, pCmd->FI.value);
 #endif
 		velSenAr[idx] = velCmdAr[idx];
-		velCmdAr[idx] = pCmd->FI.value; // Between -20 * M_PI and 20 * M_PI
+		velCmdAr[idx] = pCmd->FI.value;
 		char str[5];
 		if (velCmdAr[idx]>0){
 			velocity = velCmdAr[idx];
-//			pulseLen = (int32_t) (velocity / (2 * M_PI)) * 400;
-//			printf("pulseLen = %d\n", pulseLen);
-//			printf("size = %d\n", sizeof(pulseLen));
 
 			if (velocity < 1 * M_PI){
 				pulseLen = 0;
@@ -200,7 +201,6 @@ static HALRETURNCODE_T fncSetVal(HALCOMPONENT_T *pHalComponent,HAL_ARGUMENT_T *p
 
 		} else {
 			velocity = -velCmdAr[idx];
-//			pulseLen =  (int32_t) -(velocity / (2 * M_PI)) * 400;
 
 			if (velocity < 1 * M_PI){
 				pulseLen = 0;
@@ -215,22 +215,25 @@ static HALRETURNCODE_T fncSetVal(HALCOMPONENT_T *pHalComponent,HAL_ARGUMENT_T *p
 		}
 		
 		sprintf(str, "%d", pulseLen);
-		printf("str = %s\n", str);
-//		printf("size = %d\n", sizeof(str));
 
-		if (idx == 1) { // Left Motor
+		if (idx == 0) { // Left Motor
 			write(motor_l, str, sizeof(pulseLen));
-//			write(motor_l, (const void *)pulseLen, sizeof(pulseLen));
-		} else if (idx == 2) { // Right Motor
+		} else if (idx == 1) { // Right Motor
 			write(motor_r, str, sizeof(pulseLen));
-//			write(motor_r, (const void *)pulseLen, sizeof(pulseLen));
-		} else {
-			printf("%s:instanceId must be 1 or 2!\n", __FUNCTION__);
 		}
 		retCode = HAL_OK;
 		break;
 	case HAL_REQUEST_TORQUE_CONTROL:
 		retCode = HAL_ERROR;
+		break;
+	case HAL_REQUEST_NO_EXCITE:
+		sprintf(str, "%d", 0);
+		if (idx == 0) { // Left Motor
+			write(motor_l, str, sizeof(pulseLen));
+		} else if (idx == 1) { // Right Motor
+			write(motor_r, str, sizeof(pulseLen));
+		}
+		retCode = HAL_OK;
 		break;
 	}
 	return retCode;
@@ -241,10 +244,12 @@ static HALRETURNCODE_T fncGetVal(HALCOMPONENT_T *pHalComponent,HAL_ARGUMENT_T *p
 	printf("%s:%s\n", __FILE__, __FUNCTION__);
 #endif
 	HALRETURNCODE_T retCode = HAL_ERROR;
-	int32_t idx = pHalComponent->halId.instanceId;
-	int32_t buf;
-	if (idx < 1)
+	int32_t idx = pHalComponent->halId.instanceId-1;
+	if (idx < 0 || idx > 1)
+	{
+		printf("%s:instanceId must be 1 or 2!\n", __FUNCTION__);
 		return HAL_ERROR;
+	}
 
 	switch ( pCmd->FI.num ) {
 	default:
@@ -257,7 +262,6 @@ static HALRETURNCODE_T fncGetVal(HALCOMPONENT_T *pHalComponent,HAL_ARGUMENT_T *p
 		retCode = HAL_OK;
 		break;
 	case HAL_REQUEST_POSITION_ACTUAL:
-		posSenAr[idx] = (double)buf;
 		pCmd->FI.value = posSenAr[idx];
 #if DEBUG
 		printf("%s:%f\n", __FUNCTION__, posSenAr[idx]);
@@ -272,7 +276,6 @@ static HALRETURNCODE_T fncGetVal(HALCOMPONENT_T *pHalComponent,HAL_ARGUMENT_T *p
 		retCode = HAL_OK;
 		break;
 	case HAL_REQUEST_VELOCITY_ACTUAL:
-		velSenAr[idx] = (double)buf;
 		pCmd->FI.value = velSenAr[idx];
 #if DEBUG
 		printf("%s:%f\n", __FUNCTION__, velSenAr[idx]);
@@ -297,12 +300,10 @@ static HALRETURNCODE_T fncGetVal(HALCOMPONENT_T *pHalComponent,HAL_ARGUMENT_T *p
 	return retCode;
 }
 
-/** センサー用API , エラー返信 */
 static HALRETURNCODE_T fncGetValLst(HALCOMPONENT_T *pHalComponent,HAL_ARGUMENT_T *pCmd) { //uint32_t *pOutSize,HALFLOAT_T *pOutValLst) {
 	return HAL_ERROR;
 }
 
-/** センサー用API , エラー返信 */
 static HALRETURNCODE_T fncGetTmValLst(HALCOMPONENT_T *pHalComponent,HAL_ARGUMENT_T *pCmd) { //uint32_t *pOutSize,HALFLOAT_T *pOutValLst,int32_t *pOutTime) {
 	return HAL_ERROR;
 }

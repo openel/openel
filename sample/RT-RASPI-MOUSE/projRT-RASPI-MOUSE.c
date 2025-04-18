@@ -21,7 +21,7 @@
 
 HALCOMPONENT_T *halMotor01;
 HALCOMPONENT_T *halMotor02;
-//HALCOMPONENT_T *halSensor01;
+HALCOMPONENT_T *halSensor01;
 HALEVENTTIMER_T HalEvtTm100;
 HALEVENTTIMER_T *halTvtTm100 = &HalEvtTm100;
 HALEVENTTIMER_T HalEvtTm200;
@@ -36,7 +36,6 @@ HALTIMEROBSERVER_T tmObs201 = { { 0 }, cbNotifyTimer201 };
 
 int32_t event_count1, event_count2, event_count3;
 HALFLOAT_T velVal1, velVal2, value_list[4];
-HALFLOAT_T shunt_voltage, load_voltage, power, current;
 
 static void notify_event201a(HALCOMPONENT_T *halComponent, int32_t eventID) {
 	printf("notify_event201a : %d\n",eventID);
@@ -58,47 +57,48 @@ int main(void) {
 
 	halMotor01  = HalCreate(0x00000001,0x00000005,0x00000002,1); // Left Motor
 	halMotor02  = HalCreate(0x00000001,0x00000005,0x00000002,2); // Right Motor
-//	halSensor01 = HalCreate(0x00000005,0x0000000B,0x00000002,1); // Light Sensor
+	halSensor01 = HalCreate(0x0000000B,0x00000005,0x00000002,1); // Light Sensor
 
 	HalInit(halMotor01);
 	HalInit(halMotor02);
-//	HalInit(halSensor01);
+	HalInit(halSensor01);
 
 	outProperty(halMotor01);
 	outProperty(halMotor02);
-//	outProperty(halSensor01);
+	outProperty(halSensor01);
 
-//	printf("sensor01 getTime ret=%d\n", HalGetTime(halSensor01,&timeWk) );
-//	printf("Sensor time = %d\n",timeWk);
+	printf("sensor01 getTime ret=%d\n", HalGetTime(halSensor01,&timeWk) );
+	printf("Sensor time = %d\n",timeWk);
 
-//	HalAddObserver(halSensor01,&halObs201a);
+	HalAddObserver(halSensor01,&halObs201a);
 	flgObs = 1;
 
 	HalEventTimerSetEventPeriod(halTvtTm100,100);
 	HalEventTimerAddObserver(halTvtTm100,&tmObs101);
 	HalEventTimerAddObserver(halTvtTm100,&tmObs102);
 
-	HalEventTimerSetEventPeriod(halTvtTm200,100);
+	HalEventTimerSetEventPeriod(halTvtTm200,500);
 	HalEventTimerAddObserver(halTvtTm200,&tmObs201);
 
 	HalEventTimerStartTimer(halTvtTm100);
-//	HalEventTimerStartTimer(halTvtTm200);
+	HalEventTimerStartTimer(halTvtTm200);
 
 	while(1) {
 		usleep(500000); /* 0.5s */
-		printf("timer %5d , %5d , %5d: ", event_count1, event_count2, event_count3);
-		printf("%7.3lf %7.3lf \n", velVal1, velVal2);
+		printf("Timer: %5d , %5d , %5d  ", event_count1, event_count2, event_count3);
+		printf("Velocity[rad/s] L:%7.3lf R:%7.3lf  ", velVal1, velVal2);
+		printf("Light sensor R:%6.3f RF:%6.3f LF:%6.3f L:%6.3f\n", value_list[0], value_list[1], value_list[2], value_list[3]);
 		fflush(stdout);
 		if( 360 <= event_count1 ) break;
 	}
 
-//	HalGetTime(halSensor01,&timeWk);
-//	printf("Sensor time = %d\n",timeWk);
+	HalGetTime(halSensor01,&timeWk);
+	printf("Sensor time = %d\n",timeWk);
 
 	HalActuatorSetValue(halMotor01,HAL_REQUEST_NO_EXCITE,0);
 	HalActuatorSetValue(halMotor02,HAL_REQUEST_NO_EXCITE,0);
 
-//	HalRemoveObserver(halSensor01,&halObs201a);
+	HalRemoveObserver(halSensor01,&halObs201a);
 	flgObs = 0;
 
 	HalEventTimerStopTimer(halTvtTm100);
@@ -109,11 +109,11 @@ int main(void) {
 
 	HalFinalize(halMotor01);
 	HalFinalize(halMotor02);
-//	HalFinalize(halSensor01);
+	HalFinalize(halSensor01);
 
 	HalDestroy(halMotor01);
 	HalDestroy(halMotor02);
-//	HalDestroy(halSensor01);
+	HalDestroy(halSensor01);
 
 	printf("openEL End\n");
 	return EXIT_SUCCESS;
@@ -143,7 +143,7 @@ void cbNotifyTimer102(HALEVENTTIMER_T *eventTimer) {
 void cbNotifyTimer201(HALEVENTTIMER_T *eventTimer) {
 	int32_t size;
 	event_count3++;
-//	HalSensorGetValueList(halSensor01,&size,value_list);
+	HalSensorGetValueList(halSensor01,&size,value_list);
 }
 
 void outProperty(HALCOMPONENT_T *hC) {
