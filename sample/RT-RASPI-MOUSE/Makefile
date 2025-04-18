@@ -32,7 +32,7 @@ TARGET_SOURCES = projRT-RASPI-MOUSE.c
 CFLAGS +=
 
 .PHONY : all
-all : openel sample mf mb tr tl cd
+all : openel sample mf mb tr tl cdr cdl
 
 .PHONY : sample
 sample :
@@ -55,9 +55,13 @@ tr :
 tl :
 	$(CC) $(CFLAGS) $(INC_PATH) -L. -o $@ turn_left.c -lopenel -lrt -lm
 
-.PHONY : cd
-cd :
-	$(CC) $(CFLAGS) $(INC_PATH) -L. -o $@ change_direction.c -lopenel -lrt -lm
+.PHONY : cdr
+cdr :
+	$(CC) $(CFLAGS) $(INC_PATH) -L. -o $@ change_direction_right.c -lopenel -lrt -lm
+
+.PHONY : cdl
+cdl :
+	$(CC) $(CFLAGS) $(INC_PATH) -L. -o $@ change_direction_left.c -lopenel -lrt -lm
 
 .PHONY : openel
 openel : $(LIB_TARGET)

@@ -30,8 +30,8 @@ int main(void) {
 	HalInit(halMotor01);
 	HalInit(halMotor02);
 
-	HalActuatorSetValue(halMotor01,HAL_REQUEST_VELOCITY_CONTROL,2*M_PI); // Turn right
-	HalActuatorSetValue(halMotor02,HAL_REQUEST_VELOCITY_CONTROL,-2*M_PI);
+	HalActuatorSetValue(halMotor01,HAL_REQUEST_VELOCITY_CONTROL,-2*M_PI); // Change direction by turning left
+	HalActuatorSetValue(halMotor02,HAL_REQUEST_VELOCITY_CONTROL,2*M_PI);
 
 	usleep(950000); /* 950 msec */
 
