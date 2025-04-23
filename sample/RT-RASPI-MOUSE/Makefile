@@ -32,36 +32,44 @@ TARGET_SOURCES = projRT-RASPI-MOUSE.c
 CFLAGS +=
 
 .PHONY : all
-all : openel sample mf mb tr tl cdr cdl
+all : openel sample mf1 mb1 tr90 tl90 tr180 tl180 light_sensor free_run
 
 .PHONY : sample
 sample :
 	@echo "Linking $@"
 	$(CC) $(CFLAGS) $(INC_PATH) -L. -o $@ $(TARGET_SOURCES) -lopenel -lrt -lm
 
-.PHONY : mf
-mf :
+.PHONY : mf1
+mf1 :
 	$(CC) $(CFLAGS) $(INC_PATH) -L. -o $@ move_forward.c -lopenel -lrt -lm
 
-.PHONY : mb
-mb :
+.PHONY : mb1
+mb1 :
 	$(CC) $(CFLAGS) $(INC_PATH) -L. -o $@ move_backward.c -lopenel -lrt -lm
 
-.PHONY : tr
-tr :
-	$(CC) $(CFLAGS) $(INC_PATH) -L. -o $@ turn_right.c -lopenel -lrt -lm
+.PHONY : tr90
+tr90 :
+	$(CC) $(CFLAGS) $(INC_PATH) -L. -o $@ turn_right_90.c -lopenel -lrt -lm
 
-.PHONY : tl
-tl :
-	$(CC) $(CFLAGS) $(INC_PATH) -L. -o $@ turn_left.c -lopenel -lrt -lm
+.PHONY : tl90
+tl90 :
+	$(CC) $(CFLAGS) $(INC_PATH) -L. -o $@ turn_left_90.c -lopenel -lrt -lm
 
-.PHONY : cdr
-cdr :
-	$(CC) $(CFLAGS) $(INC_PATH) -L. -o $@ change_direction_right.c -lopenel -lrt -lm
+.PHONY : tr180
+tr180 :
+	$(CC) $(CFLAGS) $(INC_PATH) -L. -o $@ turn_right_180.c -lopenel -lrt -lm
 
-.PHONY : cdl
-cdl :
-	$(CC) $(CFLAGS) $(INC_PATH) -L. -o $@ change_direction_left.c -lopenel -lrt -lm
+.PHONY : tl180
+tl180 :
+	$(CC) $(CFLAGS) $(INC_PATH) -L. -o $@ turn_left_180.c -lopenel -lrt -lm
+
+.PHONY : light_sensor
+light_sensor :
+	$(CC) $(CFLAGS) $(INC_PATH) -L. -o $@ light_sensor.c -lopenel -lrt -lm
+
+.PHONY : free_run
+free_run :
+	$(CC) $(CFLAGS) $(INC_PATH) -L. -o $@ free_run.c -lopenel -lrt -lm
 
 .PHONY : openel
 openel : $(LIB_TARGET)
@@ -82,4 +90,8 @@ clean:
 	rm $(LIB_TARGET)
 	rm $(TARGET)
 	rm $(O_FILES)
-	rm mf mb tr tl cd
+	rm mf1 mb1 tr90 tl90 tr180 tl180 light_sensor free_run
+
+.PHONY: install
+install:
+	cp mf1 mb1 tr90 tl90 tr180 tl180 light_sensor free_run sample run.sh ~/bin/
