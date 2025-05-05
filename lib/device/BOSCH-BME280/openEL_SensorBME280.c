@@ -236,7 +236,78 @@ static HALRETURNCODE_T fncReInit(HALCOMPONENT_T *pHalComponent,HAL_ARGUMENT_T *p
 	int32_t idx = pHalComponent->halId.instanceId;
 	SIM_SEN_T *simSen = &simSenAr[idx];
 
+	simSen->obs = 0;
 	simSen->errCode = 0;
+
+	if (once == 0) {
+		close(i2c);
+		once = 1;
+	}
+
+	if (once) {
+		char i2cFileName[] = "/dev/i2c-1";
+		int driverAddress = 0x76;
+    	uint8_t settings_sel;
+
+        /* Make sure to select BME280_I2C_ADDR_PRIM or BME280_I2C_ADDR_SEC as needed */
+        id.dev_addr = BME280_I2C_ADDR_PRIM;
+
+        /* Variable to define the result */
+        int8_t rslt = BME280_OK;
+
+        if ((id.fd = open(i2cFileName, O_RDWR)) < 0)
+        {
+            fprintf(stderr, "Failed to open the i2c bus %s\n", i2cFileName);
+            return HAL_ERROR;
+        }
+
+        if (ioctl(id.fd, I2C_SLAVE, id.dev_addr) < 0)
+        {
+            fprintf(stderr, "Failed to acquire bus access and/or talk to slave.\n");
+            return HAL_ERROR;
+        }
+
+        dev.intf = BME280_I2C_INTF;
+        dev.read = user_i2c_read;
+        dev.write = user_i2c_write;
+        dev.delay_us = user_delay_us;
+
+        /* Update interface pointer with the structure that contains both device address and file descriptor */
+        dev.intf_ptr = &id;
+
+        /* Initialize the bme280 */
+        rslt = bme280_init(&dev);
+        if (rslt != BME280_OK)
+        {
+            fprintf(stderr, "Failed to initialize the device (code %+d).\n", rslt);
+            return HAL_ERROR;
+        }
+    	/* Recommended mode of operation: Indoor navigation */
+	    dev.settings.osr_h = BME280_OVERSAMPLING_1X;
+	    dev.settings.osr_p = BME280_OVERSAMPLING_16X;
+	    dev.settings.osr_t = BME280_OVERSAMPLING_2X;
+	    dev.settings.filter = BME280_FILTER_COEFF_16;
+	    dev.settings.standby_time = BME280_STANDBY_TIME_62_5_MS;
+
+    	settings_sel = BME280_OSR_PRESS_SEL;
+    	settings_sel |= BME280_OSR_TEMP_SEL;
+    	settings_sel |= BME280_OSR_HUM_SEL;
+    	settings_sel |= BME280_STANDBY_SEL;
+    	settings_sel |= BME280_FILTER_SEL;
+    	rslt = bme280_set_sensor_settings(settings_sel, &dev);
+        if (rslt != BME280_OK)
+        {
+            fprintf(stderr, "Failed to set sensor settings (code %+d).\n", rslt);
+            return HAL_ERROR;
+        }
+    	rslt = bme280_set_sensor_mode(BME280_NORMAL_MODE, &dev);
+        if (rslt != BME280_OK)
+        {
+            fprintf(stderr, "Failed to set sensor mode (code %+d).\n", rslt);
+            return HAL_ERROR;
+        }
+		once = 0;
+	}
 	return HAL_OK;
 }
 
