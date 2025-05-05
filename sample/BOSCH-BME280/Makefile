@@ -28,11 +28,29 @@ TARGET = sample
 
 TARGET_SOURCES = projSEN-BME280.c
 
+TARGET_ALT = altitude
+
+TARGET_ALT_SOURCES = altitude.c
+
+TARGET_REC = record_data
+
+TARGET_REC_SOURCES = record_data.c
+
 #CFLAGS += -std=c99
 CFLAGS +=
 
 .PHONY : all
-all : openel sample
+all : openel sample altitude record_data
+
+.PHONY : altitude
+altitude : $(TARGET_ALT)
+	@echo "Linking $@"
+	$(CC) $(CFLAGS) $(INC_PATH) -L. -L$(LIB_DIR)/device/$(COMPONENT)/ -o $@ $(TARGET_ALT_SOURCES) -lopenel -lrt -lm -lpthread
+
+.PHONY : record_data
+record_data : $(TARGET_REC)
+	@echo "Linking $@"
+	$(CC) $(CFLAGS) $(INC_PATH) -L. -L$(LIB_DIR)/device/$(COMPONENT)/ -o $@ $(TARGET_REC_SOURCES) -lopenel -lrt -lm -lpthread
 
 .PHONY : sample
 sample : $(TARGET)
