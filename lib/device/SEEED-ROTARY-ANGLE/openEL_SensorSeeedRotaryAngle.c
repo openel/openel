@@ -26,6 +26,7 @@ extern "C" {
 #include <sys/ioctl.h>
 
 uint16_t ADC_read(uint8_t adr);
+void ADC_write(uint8_t adr, uint16_t dat);
 HALFLOAT_T getRotaryAngle();
 
 static int32_t i2c;
@@ -53,7 +54,7 @@ static const HALPROPERTY_T sensor_seeed_rotary_angle_property = {
 static int32_t timeOrg;
 static HALFLOAT_T sensorValueAr[16];
 
-#define DEBUG 0
+#define DEBUG 1
 
 static HALRETURNCODE_T fncInit(HALCOMPONENT_T *pHalComponent,HAL_ARGUMENT_T *pCmd) {
 	time_t timeWk;
@@ -83,6 +84,10 @@ timeOrg = (int32_t)timeWk;
 			printf("ioctl err\n");
 			return HAL_ERROR;
 		}
+
+		ADC_write(0x10, 0x0);
+		ADC_write(0x20, 0x0);
+		ADC_write(0x30, 0x0);
 
 		once = 0;
 	}
@@ -209,12 +214,32 @@ uint16_t ADC_read(uint8_t adr)
     } else if(ret != 2){
             printf("ADC_read() err2\n");
     }
-//	printf("%s:readData[0]=%x readData[1]=%x\n", __FUNCTION__, readData[0], readData[1]);
-//	printf("%s:%d\n", __FUNCTION__, (readData[1] * 256 ) + readData[0]);
+
+#if DEBUG
+	printf("%s:readData[0]=%x readData[1]=%x\n", __FUNCTION__, readData[0], readData[1]);
+	printf("%s:%d\n", __FUNCTION__, (readData[1] * 256 ) + readData[0]);
+#endif
 
 	return ((readData[1] * 256 ) + readData[0]);
 }
 
+void ADC_write(uint8_t adr, uint16_t dat)
+{
+    uint8_t buf[3];
+	int32_t ret;
+
+    buf[0] = adr;
+    buf[1] = (uint8_t)((0xff00 & dat) >> 8);
+    buf[2] = (uint8_t)(0x00ff & dat);
+	printf("%s:buf[0]=%x buf[1]=%x buf[2]=%x \n",__FUNCTION__,buf[0],buf[1],buf[2]);
+    ret = write(i2c, buf, 3);
+    if(ret == -1){
+        perror("ADC_write() err1 ");
+		return;
+    } else if(ret != 3){
+        printf("ADC_write() err\n");
+    }
+}
 HALFLOAT_T getRotaryAngle(){
 	uint16_t data;
 	data = ADC_read(0x20); /* Range:0x0 to 0x3E7(999)*/
