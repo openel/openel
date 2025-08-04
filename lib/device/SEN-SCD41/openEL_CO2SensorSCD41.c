@@ -281,7 +281,7 @@ static HALRETURNCODE_T measure(int32_t idx){
 	int16_t error = 0;
 	bool data_ready_flag = false;
     uint16_t timeout = 0;
-    for (timeout = 0; (100000 * timeout) < (interval_in_seconds * 1200000);
+    for (timeout = 0; (100000 * timeout) < (interval_in_seconds * 1500000);
          ++timeout) {
         error = scd4x_get_data_ready_flag(&data_ready_flag);
         if (error) {

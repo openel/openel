@@ -85,7 +85,7 @@ static HALRETURNCODE_T fncSetVal(HALCOMPONENT_T *pHalComponent,HAL_ARGUMENT_T *p
 	switch ( pCmd->FI.num ) {
 	default:
 		break;
-	case HAL_REQUEST_POSITIONE_CONTROL:
+	case HAL_REQUEST_POSITION_CONTROL:
 		posSenAr[idx] = posCmdAr[idx];
 //		printf("%s:%f\n", __FUNCTION__, posSenAr[idx]);
 		posCmdAr[idx] = pCmd->FI.value;
@@ -103,12 +103,12 @@ static HALRETURNCODE_T fncGetVal(HALCOMPONENT_T *pHalComponent,HAL_ARGUMENT_T *p
 	switch ( pCmd->FI.num ) {
 	default:
 		break;
-	case HAL_REQUEST_POSITIONE_COMMAND:
+	case HAL_REQUEST_POSITION_COMMAND:
 		pCmd->FI.value = posSenAr[idx];
 //		printf("%s:%f\n", __FUNCTION__, posSenAr[idx]);
 		retCode = HAL_OK;
 		break;
-	case HAL_REQUEST_POSITIONE_ACUTUAL:
+	case HAL_REQUEST_POSITION_ACTUAL:
 		pCmd->FI.value = posSenAr[idx];
 //		printf("%s:%f\n", __FUNCTION__, posSenAr[idx]);
 		retCode = HAL_OK;

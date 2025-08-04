@@ -55,11 +55,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* Structure that contains identifier details used in example */
 struct identifier
 {
-    /* Variable to hold device address */
-    uint8_t dev_addr;
+	/* Variable to hold device address */
+	uint8_t dev_addr;
 
-    /* Variable that contains file descriptor */
-    int8_t fd;
+	/* Variable that contains file descriptor */
+	int8_t fd;
 };
 
 static struct bme280_dev dev;
@@ -165,65 +165,65 @@ static HALRETURNCODE_T fncInit(HALCOMPONENT_T *pHalComponent,HAL_ARGUMENT_T *pCm
 	if (once) {
 		char i2cFileName[] = "/dev/i2c-1";
 		int driverAddress = 0x76;
-    	uint8_t settings_sel;
+		uint8_t settings_sel;
 
-        /* Make sure to select BME280_I2C_ADDR_PRIM or BME280_I2C_ADDR_SEC as needed */
-        id.dev_addr = BME280_I2C_ADDR_PRIM;
+		/* Make sure to select BME280_I2C_ADDR_PRIM or BME280_I2C_ADDR_SEC as needed */
+		id.dev_addr = BME280_I2C_ADDR_PRIM;
 
-        /* Variable to define the result */
-        int8_t rslt = BME280_OK;
+		/* Variable to define the result */
+		int8_t rslt = BME280_OK;
 
-        if ((id.fd = open(i2cFileName, O_RDWR)) < 0)
-        {
-            fprintf(stderr, "Failed to open the i2c bus %s\n", i2cFileName);
-            return HAL_ERROR;
-        }
+		if ((id.fd = open(i2cFileName, O_RDWR)) < 0)
+		{
+			fprintf(stderr, "Failed to open the i2c bus %s\n", i2cFileName);
+			return HAL_ERROR;
+		}
 
-        if (ioctl(id.fd, I2C_SLAVE, id.dev_addr) < 0)
-        {
-            fprintf(stderr, "Failed to acquire bus access and/or talk to slave.\n");
-            return HAL_ERROR;
-        }
+		if (ioctl(id.fd, I2C_SLAVE, id.dev_addr) < 0)
+		{
+			fprintf(stderr, "Failed to acquire bus access and/or talk to slave.\n");
+			return HAL_ERROR;
+		}
 
-        dev.intf = BME280_I2C_INTF;
-        dev.read = user_i2c_read;
-        dev.write = user_i2c_write;
-        dev.delay_us = user_delay_us;
+		dev.intf = BME280_I2C_INTF;
+		dev.read = user_i2c_read;
+		dev.write = user_i2c_write;
+		dev.delay_us = user_delay_us;
 
-        /* Update interface pointer with the structure that contains both device address and file descriptor */
-        dev.intf_ptr = &id;
+		/* Update interface pointer with the structure that contains both device address and file descriptor */
+		dev.intf_ptr = &id;
 
-        /* Initialize the bme280 */
-        rslt = bme280_init(&dev);
-        if (rslt != BME280_OK)
-        {
-            fprintf(stderr, "Failed to initialize the device (code %+d).\n", rslt);
-            return HAL_ERROR;
-        }
-    	/* Recommended mode of operation: Indoor navigation */
-	    dev.settings.osr_h = BME280_OVERSAMPLING_1X;
-	    dev.settings.osr_p = BME280_OVERSAMPLING_16X;
-	    dev.settings.osr_t = BME280_OVERSAMPLING_2X;
-	    dev.settings.filter = BME280_FILTER_COEFF_16;
-	    dev.settings.standby_time = BME280_STANDBY_TIME_62_5_MS;
+		/* Initialize the bme280 */
+		rslt = bme280_init(&dev);
+		if (rslt != BME280_OK)
+		{
+			fprintf(stderr, "Failed to initialize the device (code %+d).\n", rslt);
+			return HAL_ERROR;
+		}
+		/* Recommended mode of operation: Indoor navigation */
+		dev.settings.osr_h = BME280_OVERSAMPLING_1X;
+		dev.settings.osr_p = BME280_OVERSAMPLING_16X;
+		dev.settings.osr_t = BME280_OVERSAMPLING_2X;
+		dev.settings.filter = BME280_FILTER_COEFF_16;
+		dev.settings.standby_time = BME280_STANDBY_TIME_62_5_MS;
 
-    	settings_sel = BME280_OSR_PRESS_SEL;
-    	settings_sel |= BME280_OSR_TEMP_SEL;
-    	settings_sel |= BME280_OSR_HUM_SEL;
-    	settings_sel |= BME280_STANDBY_SEL;
-    	settings_sel |= BME280_FILTER_SEL;
-    	rslt = bme280_set_sensor_settings(settings_sel, &dev);
-        if (rslt != BME280_OK)
-        {
-            fprintf(stderr, "Failed to set sensor settings (code %+d).\n", rslt);
-            return HAL_ERROR;
-        }
-    	rslt = bme280_set_sensor_mode(BME280_NORMAL_MODE, &dev);
-        if (rslt != BME280_OK)
-        {
-            fprintf(stderr, "Failed to set sensor mode (code %+d).\n", rslt);
-            return HAL_ERROR;
-        }
+		settings_sel = BME280_OSR_PRESS_SEL;
+		settings_sel |= BME280_OSR_TEMP_SEL;
+		settings_sel |= BME280_OSR_HUM_SEL;
+		settings_sel |= BME280_STANDBY_SEL;
+		settings_sel |= BME280_FILTER_SEL;
+		rslt = bme280_set_sensor_settings(settings_sel, &dev);
+		if (rslt != BME280_OK)
+		{
+			fprintf(stderr, "Failed to set sensor settings (code %+d).\n", rslt);
+			return HAL_ERROR;
+		}
+		rslt = bme280_set_sensor_mode(BME280_NORMAL_MODE, &dev);
+		if (rslt != BME280_OK)
+		{
+			fprintf(stderr, "Failed to set sensor mode (code %+d).\n", rslt);
+			return HAL_ERROR;
+		}
 		once = 0;
 	}
 	return HAL_OK;
@@ -236,7 +236,78 @@ static HALRETURNCODE_T fncReInit(HALCOMPONENT_T *pHalComponent,HAL_ARGUMENT_T *p
 	int32_t idx = pHalComponent->halId.instanceId;
 	SIM_SEN_T *simSen = &simSenAr[idx];
 
+	simSen->obs = 0;
 	simSen->errCode = 0;
+
+	if (once == 0) {
+		close(i2c);
+		once = 1;
+	}
+
+	if (once) {
+		char i2cFileName[] = "/dev/i2c-1";
+		int driverAddress = 0x76;
+		uint8_t settings_sel;
+
+		/* Make sure to select BME280_I2C_ADDR_PRIM or BME280_I2C_ADDR_SEC as needed */
+		id.dev_addr = BME280_I2C_ADDR_PRIM;
+
+		/* Variable to define the result */
+		int8_t rslt = BME280_OK;
+
+		if ((id.fd = open(i2cFileName, O_RDWR)) < 0)
+		{
+			fprintf(stderr, "Failed to open the i2c bus %s\n", i2cFileName);
+			return HAL_ERROR;
+		}
+
+		if (ioctl(id.fd, I2C_SLAVE, id.dev_addr) < 0)
+		{
+			fprintf(stderr, "Failed to acquire bus access and/or talk to slave.\n");
+			return HAL_ERROR;
+		}
+
+		dev.intf = BME280_I2C_INTF;
+		dev.read = user_i2c_read;
+		dev.write = user_i2c_write;
+		dev.delay_us = user_delay_us;
+
+		/* Update interface pointer with the structure that contains both device address and file descriptor */
+		dev.intf_ptr = &id;
+
+		/* Initialize the bme280 */
+		rslt = bme280_init(&dev);
+		if (rslt != BME280_OK)
+		{
+			fprintf(stderr, "Failed to initialize the device (code %+d).\n", rslt);
+			return HAL_ERROR;
+		}
+		/* Recommended mode of operation: Indoor navigation */
+		dev.settings.osr_h = BME280_OVERSAMPLING_1X;
+		dev.settings.osr_p = BME280_OVERSAMPLING_16X;
+		dev.settings.osr_t = BME280_OVERSAMPLING_2X;
+		dev.settings.filter = BME280_FILTER_COEFF_16;
+		dev.settings.standby_time = BME280_STANDBY_TIME_62_5_MS;
+
+		settings_sel = BME280_OSR_PRESS_SEL;
+		settings_sel |= BME280_OSR_TEMP_SEL;
+		settings_sel |= BME280_OSR_HUM_SEL;
+		settings_sel |= BME280_STANDBY_SEL;
+		settings_sel |= BME280_FILTER_SEL;
+		rslt = bme280_set_sensor_settings(settings_sel, &dev);
+		if (rslt != BME280_OK)
+		{
+			fprintf(stderr, "Failed to set sensor settings (code %+d).\n", rslt);
+			return HAL_ERROR;
+		}
+		rslt = bme280_set_sensor_mode(BME280_NORMAL_MODE, &dev);
+		if (rslt != BME280_OK)
+		{
+			fprintf(stderr, "Failed to set sensor mode (code %+d).\n", rslt);
+			return HAL_ERROR;
+		}
+		once = 0;
+	}
 	return HAL_OK;
 }
 
@@ -333,11 +404,11 @@ static HALRETURNCODE_T fncGetValLst(HALCOMPONENT_T *pHalComponent,HAL_ARGUMENT_T
 	/* Delay while the sensor completes a measurement */
 	dev.delay_us(70, dev.intf_ptr);
 	rslt = bme280_get_sensor_data(BME280_ALL, &comp_data, &dev);
-    if (rslt != BME280_OK)
-    {
-        fprintf(stderr, "Failed to get sensor data (code %+d).\n", rslt);
-        return HAL_ERROR;
-    }
+	if (rslt != BME280_OK)
+	{
+		fprintf(stderr, "Failed to get sensor data (code %+d).\n", rslt);
+		return HAL_ERROR;
+	}
 	simSen->valueList[0] = (HALFLOAT_T)(comp_data.temperature);
 	simSen->valueList[1] = (HALFLOAT_T)(0.01 * comp_data.pressure);
 	simSen->valueList[2] = (HALFLOAT_T)(comp_data.humidity);
@@ -360,17 +431,17 @@ static HALRETURNCODE_T fncGetTmValLst(HALCOMPONENT_T *pHalComponent,HAL_ARGUMENT
 	int32_t idx = pHalComponent->halId.instanceId;
 	SIM_SEN_T *simSen = &simSenAr[idx];
 
-    int8_t rslt;
+	int8_t rslt;
 	struct bme280_data comp_data;
 
 	/* Delay while the sensor completes a measurement */
 	dev.delay_us(70, dev.intf_ptr);
 	rslt = bme280_get_sensor_data(BME280_ALL, &comp_data, &dev);
-    if (rslt != BME280_OK)
-    {
-        fprintf(stderr, "Failed to get sensor data (code %+d).\n", rslt);
-        return HAL_ERROR;
-    }
+	if (rslt != BME280_OK)
+	{
+		fprintf(stderr, "Failed to get sensor data (code %+d).\n", rslt);
+		return HAL_ERROR;
+	}
 	simSen->valueList[0] = (HALFLOAT_T)(comp_data.temperature);
 	simSen->valueList[1] = (HALFLOAT_T)(0.01 * comp_data.pressure);
 	simSen->valueList[2] = (HALFLOAT_T)(comp_data.humidity);
@@ -416,14 +487,14 @@ HAL_FNCTBL_T HalSensorBME280Tbl = {
  */
 int8_t user_i2c_read(uint8_t reg_addr, uint8_t *data, uint32_t len, void *intf_ptr)
 {
-    struct identifier id;
+	struct identifier id;
 
-    id = *((struct identifier *)intf_ptr);
+	id = *((struct identifier *)intf_ptr);
 
-    write(id.fd, &reg_addr, 1);
-    read(id.fd, data, len);
+	write(id.fd, &reg_addr, 1);
+	read(id.fd, data, len);
 
-    return 0;
+	return 0;
 }
 
 /*!
@@ -432,7 +503,7 @@ int8_t user_i2c_read(uint8_t reg_addr, uint8_t *data, uint32_t len, void *intf_p
  */
 void user_delay_us(uint32_t period, void *intf_ptr)
 {
-    usleep(period);
+	usleep(period);
 }
 
 /*!
@@ -440,20 +511,20 @@ void user_delay_us(uint32_t period, void *intf_ptr)
  */
 int8_t user_i2c_write(uint8_t reg_addr, const uint8_t *data, uint32_t len, void *intf_ptr)
 {
-    uint8_t *buf;
-    struct identifier id;
+	uint8_t *buf;
+	struct identifier id;
 
-    id = *((struct identifier *)intf_ptr);
+	id = *((struct identifier *)intf_ptr);
 
-    buf = malloc(len + 1);
-    buf[0] = reg_addr;
-    memcpy(buf + 1, data, len);
-    if (write(id.fd, buf, len + 1) < (uint16_t)len)
-    {
-        return BME280_E_COMM_FAIL;
-    }
+	buf = malloc(len + 1);
+	buf[0] = reg_addr;
+	memcpy(buf + 1, data, len);
+	if (write(id.fd, buf, len + 1) < (uint16_t)len)
+	{
+		return BME280_E_COMM_FAIL;
+	}
 
-    free(buf);
+	free(buf);
 
-    return BME280_OK;
+	return BME280_OK;
 }
